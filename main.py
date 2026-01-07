@@ -23,7 +23,7 @@ async def on_ready():
 # Test command: Outputs 'pong!' when '!ping' is typed
 @bot.command()
 async def ping(ctx):
-    await ctx.send('pong!')
+    await ctx.send('pong!!')
 
 # Run the bot (Raises an error if the token is missing)
 if TOKEN:
