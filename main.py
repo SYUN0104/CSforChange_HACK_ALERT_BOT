@@ -1,4 +1,5 @@
 import discord
+import json
 import os
 import asyncio
 from discord.ext import commands
@@ -29,6 +30,34 @@ async def on_ready():
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong!')
+
+@bot.command()
+async def db(ctx):
+    """Command to check the status of database.json on Railway."""
+    db_path = "./data/database.json"
+    
+    # Check if the file exists in the current environment
+    if os.path.exists(db_path):
+        try:
+            with open(db_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            
+            count = len(data)
+            # Show the last 3 URLs for verification
+            last_three = "\n".join(data[-3:]) if count > 0 else "None"
+            
+            embed = discord.Embed(title="📊 Database Status", color=0x3498db)
+            embed.add_field(name="Stored Count", value=f"{count} / 30", inline=False)
+            embed.add_field(name="Recent URLs", value=f"```{last_three}```", inline=False)
+            embed.set_footer(text="Verification for Alpha v1.01")
+            
+            await ctx.send(embed=embed)
+            print(f"✅ DB status reported: {count} items.")
+            
+        except Exception as e:
+            await ctx.send(f"❌ Error reading database: {e}")
+    else:
+        await ctx.send("❓ database.json not found. The bot might not have saved any data yet.")
 
 async def load_extensions():
     if os.path.exists('./cogs'):
