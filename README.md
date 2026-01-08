@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/badge/version-v1.01--alpha-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-v1.02--alpha-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-active-success?style=for-the-badge)
 ---
 
@@ -73,6 +73,28 @@ python main.py
 ---
 
 ## 📝 Update Log
+
+### [v1.02-alpha] - 2026-01-08
+**Major Feature Update & UI Overhaul**
+
+- **✨ New Command: `!hack`**
+  - Manually triggers a fetch for the **top 3 trending hackathons** from Devpost.
+  - Displays them immediately and adds unique items to the database (prevents duplicates).
+  - Does not interfere with the automatic 1-hour timer loop.
+
+- **📊 Enhanced Command: `!db`**
+  - **Full List Display**: No longer hides data. Displays **all** stored hackathon URLs.
+  - **Pagination**: Automatically splits the list into chunks (10 items per message) to bypass Discord's character limits.
+
+- **🎨 UI/UX Improvements**
+  - **Advanced Embed Design**: Fully redesigned notification cards to match real Devpost API data.
+    - Added fields: `📍 Location`, `🏢 Host`, `📅 Period`, `💰 Prize (Cash/Other)`, `🏷️ Themes`.
+  - **Alert Visibility**: Added a plain text **"New Hackathon Alert!"** message before the embed to ensure users get notified via push notifications.
+  - **Startup Notification**: The bot now sends a *"🚀 System Online"* message to the designated channel upon a successful reboot or deployment.
+
+- **⚙️ Internal Logic**
+  - Refined JSON parsing logic to handle complex Devpost API structures (nested locations, prize counts, themes).
+  - Optimized error handling for manual commands.
 
 ### [v1.01-alpha] - 2026-01-07
 - **Feature**: Real-time Devpost API integration (1-hour interval).
