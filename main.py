@@ -33,31 +33,52 @@ async def ping(ctx):
 
 @bot.command()
 async def db(ctx):
-    """Command to check the status of database.json on Railway."""
+    """Displays all stored hackathon URLs in chunks of 10 items per message."""
     db_path = "./data/database.json"
     
-    # Check if the file exists in the current environment
     if os.path.exists(db_path):
         try:
             with open(db_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             
-            count = len(data)
-            # Show the last 3 URLs for verification
-            last_three = "\n".join(data[-3:]) if count > 0 else "None"
+            if not data:
+                await ctx.send("📭 The database is currently empty.")
+                return
+
+            total_items = len(data)
+            chunk_size = 10
             
-            embed = discord.Embed(title="📊 Database Status", color=0x3498db)
-            embed.add_field(name="Stored Count", value=f"{count} / 30", inline=False)
-            embed.add_field(name="Recent URLs", value=f"```{last_three}```", inline=False)
-            embed.set_footer(text="Verification for Alpha v1.01")
+            # Loop through the data in steps of 10
+            for i in range(0, total_items, chunk_size):
+                # Slice the list (e.g., 0-10, 10-20, 20-30)
+                chunk = data[i:i + chunk_size]
+                
+                content = ""
+                for j, url in enumerate(chunk):
+                    # Calculate global index (1-based)
+                    index = i + j + 1
+                    content += f"{index}. {url}\n"
+
+                # Create an Embed for this specific chunk
+                embed = discord.Embed(
+                    title=f"📊 Database List ({i + 1} - {i + len(chunk)}) of {total_items}",
+                    color=0x3498db
+                )
+                embed.description = f"```\n{content}\n```"
+                
+                # Add footer only to the last message
+                if i + chunk_size >= total_items:
+                    embed.set_footer(text=f"Total: {total_items} items | Path: {db_path}")
+
+                await ctx.send(embed=embed)
             
-            await ctx.send(embed=embed)
-            print(f"✅ DB status reported: {count} items.")
+            print(f"✅ DB checked: Displayed {total_items} items in chunks.")
             
         except Exception as e:
             await ctx.send(f"❌ Error reading database: {e}")
+            print(f"❌ DB Error: {e}")
     else:
-        await ctx.send("❓ database.json not found. The bot might not have saved any data yet.")
+        await ctx.send("❓ database.json not found. (No data saved yet)")
 
 async def load_extensions():
     if os.path.exists('./cogs'):
