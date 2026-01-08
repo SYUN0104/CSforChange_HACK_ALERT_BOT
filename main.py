@@ -1,13 +1,14 @@
 import discord
-import json
 import os
 import asyncio
+import json
 from discord.ext import commands
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+CHANNEL_ID = os.getenv('CHANNEL_ID') # Load Channel ID here too
 
 # Setup Intents
 intents = discord.Intents.default()
@@ -18,15 +19,28 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     # Set Discord Status (Activity)
-    activity = discord.Game(name="Hackathon Bot v1.01-alpha")
+    activity = discord.Game(name="Hackathon Bot v1.02-alpha")
     await bot.change_presence(status=discord.Status.online, activity=activity)
 
-    print(f'🚀 Login Success: {bot.user.name}')
-    print('Version: 1.01-alpha')
-    
     print(f'🚀 Login Success: {bot.user.name} ({bot.user.id})')
+    print('Version: 1.02-alpha')
     print('System operational. Ready to serve.')
 
+    # ✅ [Feature Added] Send "Bot is ready!" message to the target channel
+    if CHANNEL_ID:
+        try:
+            target_channel = bot.get_channel(int(CHANNEL_ID))
+            if target_channel:
+                await target_channel.send("🚀 **System Online:** Hackathon Bot v1.02-alpha is ready!")
+                print(f"✅ Startup message sent to channel {target_channel.name}")
+            else:
+                print(f"⚠️ Could not find channel with ID {CHANNEL_ID} for startup message.")
+        except Exception as e:
+            print(f"❌ Error sending startup message: {e}")
+
+# ---------------------------------------------------
+# Commands (Ping, DB Check)
+# ---------------------------------------------------
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong!')
@@ -48,25 +62,19 @@ async def db(ctx):
             total_items = len(data)
             chunk_size = 10
             
-            # Loop through the data in steps of 10
             for i in range(0, total_items, chunk_size):
-                # Slice the list (e.g., 0-10, 10-20, 20-30)
                 chunk = data[i:i + chunk_size]
-                
                 content = ""
                 for j, url in enumerate(chunk):
-                    # Calculate global index (1-based)
                     index = i + j + 1
                     content += f"{index}. {url}\n"
 
-                # Create an Embed for this specific chunk
                 embed = discord.Embed(
                     title=f"📊 Database List ({i + 1} - {i + len(chunk)}) of {total_items}",
                     color=0x3498db
                 )
                 embed.description = f"```\n{content}\n```"
                 
-                # Add footer only to the last message
                 if i + chunk_size >= total_items:
                     embed.set_footer(text=f"Total: {total_items} items | Path: {db_path}")
 
