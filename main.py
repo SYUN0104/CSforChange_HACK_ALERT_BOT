@@ -1,32 +1,52 @@
 import discord
 import os
+import asyncio
 from discord.ext import commands
 from dotenv import load_dotenv
 
-# Load token from .env file
+# Load environment variables
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-# Bot configuration (Intents: Set permissions for what information the bot can access in the server)
+# Setup Intents
 intents = discord.Intents.default()
-intents.message_content = True # Allow the bot to read message content
+intents.message_content = True
 
-# Create bot object (Command prefix is set to '!')
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# Event triggered when the bot is online
 @bot.event
 async def on_ready():
-    print(f'Login Success: {bot.user.name} ({bot.user.id})')
-    print('Bot is ready!')
+    # Set Discord Status (Activity)
+    activity = discord.Game(name="Hackathon Bot v1.01-alpha")
+    await bot.change_presence(status=discord.Status.online, activity=activity)
 
-# Test command: Outputs 'pong!' when '!ping' is typed
+    print(f'🚀 Login Success: {bot.user.name}')
+    print('Version: 1.01-alpha')
+    
+    print(f'🚀 Login Success: {bot.user.name} ({bot.user.id})')
+    print('System operational. Ready to serve.')
+
 @bot.command()
 async def ping(ctx):
-    await ctx.send('pong!!!')
+    await ctx.send('pong!')
 
-# Run the bot (Raises an error if the token is missing)
-if TOKEN:
-    bot.run(TOKEN)
-else:
-    print("Error: DISCORD_TOKEN not found in .env file.")
+async def load_extensions():
+    if os.path.exists('./cogs'):
+        for filename in os.listdir('./cogs'):
+            if filename.endswith('.py'):
+                await bot.load_extension(f'cogs.{filename[:-3]}')
+                print(f'✅ Extension Loaded: {filename}')
+
+async def main():
+    async with bot:
+        await load_extensions()
+        await bot.start(TOKEN)
+
+if __name__ == '__main__':
+    if TOKEN:
+        try:
+            asyncio.run(main())
+        except KeyboardInterrupt:
+            print("\n🛑 Bot shutdown manually.")
+    else:
+        print("❌ Error: DISCORD_TOKEN not found in .env file.")
