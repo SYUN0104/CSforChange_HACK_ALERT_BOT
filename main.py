@@ -45,6 +45,7 @@ async def on_ready():
 async def ping(ctx):
     await ctx.send('pong!')
 
+
 @bot.command()
 async def db(ctx):
     """Displays all stored hackathon URLs in chunks of 10 items per message."""
