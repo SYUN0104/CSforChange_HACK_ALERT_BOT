@@ -177,6 +177,52 @@ class Hackathon(commands.Cog):
             await ctx.send(f"✅ Database updated with {new_count} new item(s).")
         else:
             await ctx.send("👌 These hackathons are already in the database.")
+    # ====================================================
+    # 📊 Command: !db (Check Database)
+    # ====================================================
+    @commands.command()
+    async def db(self, ctx):
+        """Displays all stored hackathon URLs in chunks of 10 items per message."""
+        # Use the path defined in __init__
+        db_path = self.db_path
+        
+        if os.path.exists(db_path):
+            try:
+                with open(db_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                
+                if not data:
+                    await ctx.send("📭 The database is currently empty.")
+                    return
+
+                total_items = len(data)
+                chunk_size = 10
+                
+                for i in range(0, total_items, chunk_size):
+                    chunk = data[i:i + chunk_size]
+                    content = ""
+                    for j, url in enumerate(chunk):
+                        index = i + j + 1
+                        content += f"{index}. {url}\n"
+
+                    embed = discord.Embed(
+                        title=f"📊 Database List ({i + 1} - {i + len(chunk)}) of {total_items}",
+                        color=0x3498db
+                    )
+                    embed.description = f"```\n{content}\n```"
+                    
+                    if i + chunk_size >= total_items:
+                        embed.set_footer(text=f"Total: {total_items} items | Path: {db_path}")
+
+                    await ctx.send(embed=embed)
+                
+                print(f"✅ DB checked: Displayed {total_items} items in chunks.")
+                
+            except Exception as e:
+                await ctx.send(f"❌ Error reading database: {e}")
+                print(f"❌ DB Error: {e}")
+        else:
+            await ctx.send("❓ database.json not found. (No data saved yet)")
 
     # ====================================================
     # ⏰ Loop Task: Runs every 1 hour
