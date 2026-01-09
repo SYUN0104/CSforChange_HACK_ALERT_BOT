@@ -30,7 +30,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     # Set Discord Status (Activity)
-    activity = discord.Game(name="Hackathon Bot v1.02-alpha")
+    activity = discord.Game(name="CSforChange Helper v1.02-alpha")
     await bot.change_presence(status=discord.Status.online, activity=activity)
 
     print(f'🚀 Login Success: {bot.user.name} ({bot.user.id})')
@@ -45,12 +45,13 @@ async def on_ready():
         try:
             target_channel = bot.get_channel(int(CHANNEL_ID))
             if target_channel:
-                await target_channel.send("🚀 **System Online:** Hackathon Bot v1.02-alpha is ready!")
+                await target_channel.send("🚀 **System Online:** CSforChange Helper v1.02-alpha is ready!")
                 print(f"✅ Startup message sent to channel: {target_channel.name}")
             else:
                 print(f"⚠️ Could not find channel with ID {CHANNEL_ID} for startup message.")
         except Exception as e:
             print(f"❌ Error sending startup message: {e}")
+
 
 # ---------------------------------------------------
 # Commands
