@@ -63,6 +63,7 @@ Create a `.env` file in the root directory and enter your bot token.
 ```env
 DISCORD_TOKEN=your_bot_token_here
 CHANNEL_ID=the_channel_ID_run_the_bot
+ENABLED_COGS=the_features_you_test
 ```
 
 
