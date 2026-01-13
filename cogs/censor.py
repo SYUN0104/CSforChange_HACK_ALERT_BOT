@@ -7,9 +7,25 @@ class Censor(commands.Cog):
         self.bot = bot
 
         self.bad_words = [
-            "yes",
-            "badword2",
-            "badword3"
+            "fuck",
+            "shit",
+            "bitch",
+            "asshole",
+            "bastard",
+            "dick",
+            "piss",
+            "crap",
+            "damn",
+            "hell",
+            "bullshit",
+            "motherfucker",
+            "wtf",
+            "tf",
+            "idiot",
+            "stupid",
+            "dumb",
+            "moron",
+            "retard", 
         ]
 
         self.pattern = re.compile(
@@ -21,7 +37,6 @@ class Censor(commands.Cog):
     async def on_message(self, message: discord.Message):
         if message.author.bot:
             return
-
 
         if self.pattern.search(message.content):
             try:
