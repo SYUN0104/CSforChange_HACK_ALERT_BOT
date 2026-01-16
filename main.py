@@ -24,6 +24,8 @@ ALLOWED_COGS = [cog.strip() for cog in allowed_cogs_env.split(',') if cog.strip(
 # Setup Intents
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
+intents.guilds = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
